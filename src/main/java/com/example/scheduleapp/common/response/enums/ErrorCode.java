@@ -15,7 +15,7 @@ public enum ErrorCode {
     //404 Not Found
     NOT_FOUND(404, HttpStatus.NOT_FOUND, "존재하지 않는 API입니다."),
     SCHEDULE_NOT_FOUND(404, HttpStatus.NOT_FOUND, "존재하지 않는 일정입니다."),
-    USER_NOT_FOUND(404, HttpStatus.NOT_FOUND, "존재하지 않는 User Id 입니다."),
+    USER_NOT_FOUND(404, HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다."),
     //405 Method Not Allowed
     METHOD_NOT_ALLOWED(405, HttpStatus.METHOD_NOT_ALLOWED, "지원하지 않는 메소드입니다."),
     //500 Internal Server Error

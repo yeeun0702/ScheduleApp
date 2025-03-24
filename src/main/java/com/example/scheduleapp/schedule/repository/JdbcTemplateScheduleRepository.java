@@ -1,5 +1,7 @@
 package com.example.scheduleapp.schedule.repository;
 
+import com.example.scheduleapp.common.exception.BadRequestException;
+import com.example.scheduleapp.common.response.enums.ErrorCode;
 import com.example.scheduleapp.schedule.dto.response.ScheduleDto;
 import com.example.scheduleapp.schedule.entity.Schedule;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -63,7 +65,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository{
                     userName
             );
         } catch (EmptyResultDataAccessException e) {
-            return null;
+            throw new BadRequestException(ErrorCode.USER_NOT_FOUND);
         }
     }
 
