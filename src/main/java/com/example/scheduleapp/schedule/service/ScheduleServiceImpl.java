@@ -1,6 +1,7 @@
 package com.example.scheduleapp.schedule.service;
 
 import com.example.scheduleapp.schedule.dto.request.ScheduleCreateDto;
+import com.example.scheduleapp.schedule.dto.response.ScheduleDetailDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleListDto;
 import com.example.scheduleapp.schedule.entity.Schedule;
@@ -33,5 +34,10 @@ public class ScheduleServiceImpl implements ScheduleService{
     @Override
     public List<ScheduleListDto> getAllSchedules(String userName, LocalDateTime updatedAt) {
         return scheduleRepository.getAllSchedules(userName, updatedAt);
+    }
+
+    @Override
+    public ScheduleDetailDto getDetailSchedule(long scheduleId) {
+        return scheduleRepository.getDetailSchedule(scheduleId);
     }
 }
