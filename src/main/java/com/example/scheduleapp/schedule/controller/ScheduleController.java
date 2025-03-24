@@ -3,11 +3,13 @@ package com.example.scheduleapp.schedule.controller;
 import com.example.scheduleapp.common.response.ApiResponseDto;
 import com.example.scheduleapp.common.response.enums.SuccessCode;
 import com.example.scheduleapp.schedule.dto.request.ScheduleCreateDto;
+import com.example.scheduleapp.schedule.dto.response.ScheduleListDto;
 import com.example.scheduleapp.schedule.service.ScheduleService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/schedules")
@@ -23,4 +25,13 @@ public class ScheduleController {
     private ApiResponseDto<?> createSchedule(@RequestBody ScheduleCreateDto scheduleCreateDto){
         return ApiResponseDto.success(SuccessCode.SCHEDULE_POST_SUCCESS, scheduleService.createSchedule(scheduleCreateDto));
     }
+
+    @GetMapping
+    public ResponseEntity<ApiResponseDto<List<ScheduleListDto>>> getAllSchedules(
+            @RequestParam(required = false) String userName,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime updatedAt
+    ) {
+        return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SCHEDULE_LIST_FOUND, scheduleService.getAllSchedules(userName, updatedAt)));
+    }
+
 }
