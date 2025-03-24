@@ -1,5 +1,6 @@
 package com.example.scheduleapp.schedule.repository;
 
+import com.example.scheduleapp.schedule.dto.response.ScheduleDetailDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleListDto;
 import com.example.scheduleapp.schedule.entity.Schedule;
@@ -12,4 +13,6 @@ public interface ScheduleRepository {
     ScheduleDto createSchedule(Schedule schedule);
 
     List<ScheduleListDto> getAllSchedules(String userName, LocalDateTime updatedAt);
+
+    ScheduleDetailDto getDetailSchedule(long scheduleId);
 }
