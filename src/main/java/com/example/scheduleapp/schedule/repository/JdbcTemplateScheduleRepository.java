@@ -2,6 +2,7 @@ package com.example.scheduleapp.schedule.repository;
 
 import com.example.scheduleapp.common.exception.BadRequestException;
 import com.example.scheduleapp.common.response.enums.ErrorCode;
+import com.example.scheduleapp.schedule.dto.response.ScheduleDetailDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleListDto;
 import com.example.scheduleapp.schedule.entity.Schedule;
@@ -123,4 +124,31 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
         );
     }
 
+    @Override
+    public ScheduleDetailDto getDetailSchedule(long scheduleId) {
+        StringBuilder sql = new StringBuilder("""
+                    SELECT s.id, u.name, s.todo, s.password, s.created_at, s.updated_at
+                    FROM schedule s
+                    JOIN users u ON s.user_id = u.id
+                    WHERE s.id = ?          
+                """);
+
+        List<Object> params = new ArrayList<>(); // 리스트에 파라미터들 담기
+
+        params.add(scheduleId);
+        // ScheduleDetailDto에 담아서 반환
+        try {
+            return jdbcTemplate.queryForObject(sql.toString(), (rs, rowNum) ->
+                    new ScheduleDetailDto(
+                            rs.getString("name"),
+                            rs.getString("todo"),
+                            rs.getString("password"),
+                            rs.getTimestamp("created_at").toLocalDateTime(),
+                            rs.getTimestamp("updated_at").toLocalDateTime()
+                    ), params.toArray()
+            );
+        } catch (EmptyResultDataAccessException e) {
+            throw new BadRequestException(ErrorCode.SCHEDULE_NOT_FOUND);
+        }
+    }
 }
