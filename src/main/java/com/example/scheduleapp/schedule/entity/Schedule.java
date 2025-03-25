@@ -15,14 +15,16 @@ public class Schedule {
     private Long id;
     private Long userId;
     private String userName;
+    private String email;
     private String todo;
     private String password;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     // 생성자
-    public Schedule(String userName, String todo, String password) {
+    public Schedule(String userName, String email, String todo, String password) {
         this.userName = userName;
+        this.email = email;
         this.todo = todo;
         this.password = password;
     }
