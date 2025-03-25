@@ -6,6 +6,7 @@ import com.example.scheduleapp.schedule.dto.response.ScheduleDetailDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleListDto;
 import com.example.scheduleapp.schedule.entity.Schedule;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Repository
 public class JdbcTemplateScheduleRepository implements ScheduleRepository {
     private final JdbcTemplate jdbcTemplate;
@@ -28,15 +30,14 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
 
     /**
      * 일정 생성 메서드
-     * - 작성자 이름으로 사용자 ID 조회
+     *  작성자 이름 + 이메일로 사용자 ID 조회
      * - schedule 테이블에 일정 등록
      * - 등록된 데이터를 ScheduleDto 형태로 반환
      */
     @Override
     public ScheduleDto createSchedule(Schedule schedule) {
 
-        // 사용자 이름으로 user_id 조회
-        Long userId = findUserIdByName(schedule.getUserName());
+        Long userId = findUserIdByNameAndEmail(schedule.getUserName(), schedule.getEmail());
         if (userId == null) {
             throw new BadRequestException(ErrorCode.USER_NOT_FOUND);
         }
@@ -63,12 +64,27 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
                 id,
                 userId,
                 schedule.getUserName(),
+                schedule.getEmail(),
                 schedule.getTodo(),
                 schedule.getPassword(),
                 now,
                 now
         );
     }
+
+    public Long findUserIdByNameAndEmail(String userName, String email) {
+        try {
+            return jdbcTemplate.queryForObject(
+                    "SELECT id FROM users WHERE name = ? AND email = ?",
+                    Long.class,
+                    userName,
+                    email
+            );
+        } catch (EmptyResultDataAccessException e) {
+            throw new BadRequestException(ErrorCode.USER_NOT_FOUND);
+        }
+    }
+
 
     /**
      * 일정 목록 조회
@@ -210,6 +226,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
                     rs.getLong("id"),
                     rs.getLong("user_id"),
                     rs.getString("name"),
+                    rs.getString("email"),
                     rs.getString("todo"),
                     rs.getString("password"),
                     rs.getTimestamp("created_at").toLocalDateTime(),
