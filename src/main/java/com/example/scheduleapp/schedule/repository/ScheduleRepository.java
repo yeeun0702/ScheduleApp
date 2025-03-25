@@ -21,4 +21,6 @@ public interface ScheduleRepository {
     Schedule findById(Long scheduleId); // 일정 ID로 조회
 
     Long findUserIdByName(String userName); // 작성자 이름으로 사용자 ID 조회
+
+    void deleteById(Long scheduleId); // 일정 ID로 삭제
 }
