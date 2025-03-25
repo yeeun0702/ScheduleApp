@@ -113,6 +113,12 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
         );
     }
 
+    /**
+     * 일정 상세 조회
+     * - scheduleId를 기준으로 일정 1건의 상세 정보를 조회
+     * - 작성자 이름, 할일, 비밀번호, 생성일, 수정일을 포함
+     * - 존재하지 않는 ID일 경우 예외를 발생
+     */
     @Override
     public ScheduleDetailDto getDetailSchedule(long scheduleId) {
         StringBuilder sql = new StringBuilder("""
@@ -141,7 +147,14 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
         }
     }
 
-
+    /**
+     * 일정 정보 수정
+     * - 일정의 user_id, 할 일(todo), 수정일(updated_at)을 수정
+     * - 수정 대상이 존재하지 않으면 예외를 발생
+     *
+     * @param schedule 수정 대상 일정 정보 객체
+     * @return 수정된 일정 정보 (ScheduleDto)
+     */
     @Override
     public ScheduleDto updateSchedule(Schedule schedule) {
         String sql = """
@@ -158,10 +171,12 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
                 schedule.getId()
         );
 
+        // update 쿼리 실행 결과가 0이면 존재하지 않는 ID로 간주하여 예외 처리
         if (updated == 0) {
             throw new BadRequestException(ErrorCode.SCHEDULE_NOT_FOUND);
         }
 
+        // 수정 후 정보 반환
         return new ScheduleDto(
                 schedule.getId(),
                 schedule.getUserId(),
@@ -173,6 +188,14 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
         );
     }
 
+    /**
+     * 일정 ID로 일정 객체 조회
+     * - Schedule 엔티티 전체를 반환 (작성자 ID 및 이름 포함)
+     * - 결과가 없을 경우 예외 처리
+     *
+     * @param scheduleId 조회할 일정 ID
+     * @return 일정 객체
+     */
     @Override
     public Schedule findById(Long scheduleId) {
         String sql = """
@@ -197,6 +220,13 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
         }
     }
 
+    /**
+     * 사용자 이름으로 사용자 ID 조회
+     * - 사용자 이름이 중복되지 않는다는 전제가 필요
+     * - 존재하지 않는 경우 예외 처리
+     * @param userName 사용자 이름
+     * @return 사용자 고유 ID
+     */
     @Override
     public Long findUserIdByName(String userName) {
         try {

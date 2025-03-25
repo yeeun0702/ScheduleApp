@@ -10,13 +10,13 @@ import java.util.List;
 
 public interface ScheduleRepository {
 
-    ScheduleDto createSchedule(Schedule schedule);
+    ScheduleDto createSchedule(Schedule schedule); // 일정 생성
 
-    List<ScheduleListDto> getAllSchedules(String userName, LocalDateTime updatedAt);
+    List<ScheduleListDto> getAllSchedules(String userName, LocalDateTime updatedAt); // 일정 전체 조회
 
-    ScheduleDetailDto getDetailSchedule(long scheduleId);
+    ScheduleDetailDto getDetailSchedule(long scheduleId); // 일정 상세 조회
 
-    ScheduleDto updateSchedule(Schedule schedule);
+    ScheduleDto updateSchedule(Schedule schedule); // 일정 수정
 
     Schedule findById(Long scheduleId); // 일정 ID로 조회
 
