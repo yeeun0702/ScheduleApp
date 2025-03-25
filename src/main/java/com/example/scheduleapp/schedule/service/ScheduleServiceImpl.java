@@ -9,11 +9,13 @@ import com.example.scheduleapp.schedule.dto.response.ScheduleDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleListDto;
 import com.example.scheduleapp.schedule.entity.Schedule;
 import com.example.scheduleapp.schedule.repository.ScheduleRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
     private final ScheduleRepository scheduleRepository;
@@ -31,6 +33,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     public ScheduleDto createSchedule(ScheduleCreateDto scheduleCreateDto) {
         Schedule schedule = new Schedule(
                 scheduleCreateDto.userName(),
+                scheduleCreateDto.email(),
                 scheduleCreateDto.todo(),
                 scheduleCreateDto.password()
         );
@@ -46,10 +49,20 @@ public class ScheduleServiceImpl implements ScheduleService {
      * @param updatedAt 수정일 기준 (Optional)
      * @return 일정 리스트
      */
+    /**
+     * 일정 목록 조회 메서드
+     * - 사용자 이름과 수정일을 기준으로 일정 목록을 조회
+     * - 조건이 없다면 전체 일정 반환
+     *
+     * @param userName 작성자명 (Optional)
+     * @param updatedAt 수정일 기준 (Optional)
+     * @return 일정 리스트
+     */
     @Override
-    public List<ScheduleListDto> getAllSchedules(String userName, LocalDateTime updatedAt) {
-        return scheduleRepository.getAllSchedules(userName, updatedAt);
+    public List<ScheduleListDto> getAllSchedules(Long userId, LocalDateTime updatedAt) {
+        return scheduleRepository.getAllSchedules(userId, updatedAt); // userId 기반 조회
     }
+
 
     /**
      * 특정 일정 상세 조회

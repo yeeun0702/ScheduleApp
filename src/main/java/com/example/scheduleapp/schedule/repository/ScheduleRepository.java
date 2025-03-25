@@ -12,7 +12,7 @@ public interface ScheduleRepository {
 
     ScheduleDto createSchedule(Schedule schedule); // 일정 생성
 
-    List<ScheduleListDto> getAllSchedules(String userName, LocalDateTime updatedAt); // 일정 전체 조회
+    List<ScheduleListDto> getAllSchedules(Long userId, LocalDateTime updatedAt); // 일정 전체 조회 (userId)
 
     ScheduleDetailDto getDetailSchedule(long scheduleId); // 일정 상세 조회
 
