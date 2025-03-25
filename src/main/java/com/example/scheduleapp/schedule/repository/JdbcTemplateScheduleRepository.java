@@ -46,12 +46,14 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
                 .withTableName("schedule")
                 .usingGeneratedKeyColumns("id");
 
+        LocalDateTime now = LocalDateTime.now(); // 현재 시간 생성 (createdAt, updatedAt 동일하게)
+
         Map<String, Object> params = new HashMap<>();
         params.put("user_id", userId);  // 외래키
         params.put("todo", schedule.getTodo());
         params.put("password", schedule.getPassword());
-        params.put("created_at", LocalDateTime.now()); // // 현재 시간 생성 (createdAt, updatedAt 동일하게)
-        params.put("updated_at", LocalDateTime.now());
+        params.put("created_at", now);
+        params.put("updated_at", now);
 
         // 저장 후 생성된 key값을 Number 타입으로 반환하는 메서드
         Number key = jdbcInsert.executeAndReturnKey(params);
@@ -63,22 +65,9 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
                 schedule.getUserName(),
                 schedule.getTodo(),
                 schedule.getPassword(),
-                LocalDateTime.now(),
-                LocalDateTime.now()
+                now,
+                now
         );
-    }
-
-    // 사용자 이름으로 사용자 ID 조회
-    private Long findUserIdByName(String userName) {
-        try {
-            return jdbcTemplate.queryForObject(
-                    "SELECT id FROM users WHERE name = ?",
-                    Long.class,
-                    userName
-            );
-        } catch (EmptyResultDataAccessException e) {
-            throw new BadRequestException(ErrorCode.USER_NOT_FOUND);
-        }
     }
 
     /**
@@ -149,6 +138,75 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
             );
         } catch (EmptyResultDataAccessException e) {
             throw new BadRequestException(ErrorCode.SCHEDULE_NOT_FOUND);
+        }
+    }
+
+
+    @Override
+    public ScheduleDto updateSchedule(Schedule schedule) {
+        String sql = """
+            UPDATE schedule
+            SET user_id = ?, todo = ?, updated_at = ?
+            WHERE id = ?
+        """;
+
+        int updated = jdbcTemplate.update(
+                sql,
+                schedule.getUserId(),
+                schedule.getTodo(),
+                schedule.getUpdatedAt(),
+                schedule.getId()
+        );
+
+        if (updated == 0) {
+            throw new BadRequestException(ErrorCode.SCHEDULE_NOT_FOUND);
+        }
+
+        return new ScheduleDto(
+                schedule.getId(),
+                schedule.getUserId(),
+                schedule.getUserName(),
+                schedule.getTodo(),
+                schedule.getPassword(),
+                schedule.getCreatedAt(),
+                schedule.getUpdatedAt()
+        );
+    }
+
+    @Override
+    public Schedule findById(Long scheduleId) {
+        String sql = """
+                    SELECT s.id, s.todo, s.password, s.created_at, s.updated_at, s.user_id, u.name
+                    FROM schedule s
+                    JOIN users u ON s.user_id = u.id
+                    WHERE s.id = ?
+                """;
+
+        try {
+            return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> new Schedule(
+                    rs.getLong("id"),
+                    rs.getLong("user_id"),
+                    rs.getString("name"),
+                    rs.getString("todo"),
+                    rs.getString("password"),
+                    rs.getTimestamp("created_at").toLocalDateTime(),
+                    rs.getTimestamp("updated_at").toLocalDateTime()
+            ), scheduleId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new BadRequestException(ErrorCode.SCHEDULE_NOT_FOUND);
+        }
+    }
+
+    @Override
+    public Long findUserIdByName(String userName) {
+        try {
+            return jdbcTemplate.queryForObject(
+                    "SELECT id FROM users WHERE name = ?",
+                    Long.class,
+                    userName
+            );
+        } catch (EmptyResultDataAccessException e) {
+            throw new BadRequestException(ErrorCode.USER_NOT_FOUND);
         }
     }
 }
