@@ -88,12 +88,12 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
 
     /**
      * 일정 목록 조회
-     * - userName, updatedAt 두 조건 모두 선택적
+     * - userId, updatedAt 두 조건 모두 선택적
      * - 조건이 존재할 경우 WHERE 절에 추가
      * - updated_at 기준 내림차순 정렬
      */
     @Override
-    public List<ScheduleListDto> getAllSchedules(String userName, LocalDateTime updatedAt) {
+    public List<ScheduleListDto> getAllSchedules(Long userId, LocalDateTime updatedAt) {
         StringBuilder sql = new StringBuilder("""
                     SELECT s.id, u.name, s.todo, s.updated_at
                     FROM schedule s
@@ -101,12 +101,12 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
                     WHERE 1=1
                 """);
 
-        List<Object> params = new ArrayList<>(); // 리스트에 파라미터들 담기
+        List<Object> params = new ArrayList<>();
 
-        // 작성자 이름 조건 추가
-        if (userName != null && !userName.isBlank()) {
-            sql.append(" AND u.name = ?");
-            params.add(userName);
+        // userId 조건 추가
+        if (userId != null) {
+            sql.append(" AND s.user_id = ?");
+            params.add(userId);
         }
 
         // 수정일 조건 추가 (날짜만 비교)
@@ -115,10 +115,8 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
             params.add(updatedAt);
         }
 
-        // 수정일 내림차순 정렬
-        sql.append(" ORDER BY s.updated_at DESC");
+        sql.append(" ORDER BY s.updated_at DESC"); // 수정일 내림차순 정렬
 
-        // 쿼리 실행을 ScheduleListDto에 담아서 반환
         return jdbcTemplate.query(sql.toString(), (rs, rowNum) ->
                 new ScheduleListDto(
                         rs.getLong("id"),
@@ -128,6 +126,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
                 ), params.toArray()
         );
     }
+
 
     /**
      * 일정 상세 조회
@@ -197,6 +196,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
                 schedule.getId(),
                 schedule.getUserId(),
                 schedule.getUserName(),
+                schedule.getEmail(),
                 schedule.getTodo(),
                 schedule.getPassword(),
                 schedule.getCreatedAt(),
