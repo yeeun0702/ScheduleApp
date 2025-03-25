@@ -13,7 +13,9 @@ public enum SuccessCode {
 
     // 200 OK
     SCHEDULE_GET_SUCCESS(200, HttpStatus.OK, "일정을 성공적으로 찾았습니다."),
-    SCHEDULE_LIST_FOUND(200, HttpStatus.OK, "일정 목록을 성공적으로 찾았습니다");
+    SCHEDULE_LIST_FOUND(200, HttpStatus.OK, "일정 목록을 성공적으로 찾았습니다"),
+    SCHEDULE_PUT_SUCCESS(200, HttpStatus.OK, "일정을 성공적으로 수정했습니다."),
+    SCHEDULE_DELETE_SUCCESS(200, HttpStatus.OK, "일정을 성공적으로 삭제했습니다.");
 
     private final int code;
     private final HttpStatus httpStatus;
