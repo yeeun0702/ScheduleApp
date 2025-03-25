@@ -19,4 +19,6 @@ public interface ScheduleService {
     ScheduleDetailDto getDetailSchedule(long scheduleId); // 메모 상세 조회
 
     ScheduleDetailDto updateSchedule(long scheduleId, ScheduleUpdateDto scheduleUpdateDto); // 메모 수정
+
+    void deleteSchedule(Long scheduleId, String password); // 메모 삭제
 }
