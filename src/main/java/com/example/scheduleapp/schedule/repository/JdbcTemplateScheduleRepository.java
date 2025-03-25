@@ -224,6 +224,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
      * 사용자 이름으로 사용자 ID 조회
      * - 사용자 이름이 중복되지 않는다는 전제가 필요
      * - 존재하지 않는 경우 예외 처리
+     *
      * @param userName 사용자 이름
      * @return 사용자 고유 ID
      */
@@ -237,6 +238,23 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
             );
         } catch (EmptyResultDataAccessException e) {
             throw new BadRequestException(ErrorCode.USER_NOT_FOUND);
+        }
+    }
+
+    /**
+     * 주어진 scheduleId를 기반으로 일정 데이터를 삭제
+     * - 존재하지 않는 경우 예외 처리
+     * @param scheduleId 삭제할 일정의 ID
+     */
+    @Override
+    public void deleteById(Long scheduleId) {
+        String sql = "DELETE FROM schedule WHERE id = ?";
+
+        int result = jdbcTemplate.update(sql, scheduleId); // 삭제 쿼리 실행
+
+        // 삭제된 행이 없으면 예외 발생 (잘못된 ID 요청)
+        if (result == 0) {
+            throw new BadRequestException(ErrorCode.SCHEDULE_NOT_FOUND);
         }
     }
 }
