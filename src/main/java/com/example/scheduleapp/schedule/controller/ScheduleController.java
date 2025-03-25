@@ -8,6 +8,7 @@ import com.example.scheduleapp.schedule.dto.request.ScheduleUpdateDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleDetailDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleListDto;
 import com.example.scheduleapp.schedule.service.ScheduleService;
+import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class ScheduleController {
     }
 
     @PostMapping
-    private ApiResponseDto<?> createSchedule(@RequestBody ScheduleCreateDto scheduleCreateDto) {
+    private ApiResponseDto<?> createSchedule(@RequestBody @Valid final ScheduleCreateDto scheduleCreateDto) {
         return ApiResponseDto.success(SuccessCode.SCHEDULE_POST_SUCCESS, scheduleService.createSchedule(scheduleCreateDto));
     }
 

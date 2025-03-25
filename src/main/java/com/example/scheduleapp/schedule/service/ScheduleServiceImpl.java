@@ -96,6 +96,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         schedule.update(
                 scheduleUpdateDto.todo(),
                 scheduleUpdateDto.userName(),
+                scheduleUpdateDto.email(),
                 userId,
                 LocalDateTime.now()
         );
