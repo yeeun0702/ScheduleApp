@@ -30,7 +30,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
 
     /**
      * 일정 생성 메서드
-     *  작성자 이름 + 이메일로 사용자 ID 조회
+     * 작성자 이름 + 이메일로 사용자 ID 조회
      * - schedule 테이블에 일정 등록
      * - 등록된 데이터를 ScheduleDto 형태로 반환
      */
@@ -51,6 +51,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
 
         Map<String, Object> params = new HashMap<>();
         params.put("user_id", userId);  // 외래키
+        params.put("email", schedule.getEmail());
         params.put("todo", schedule.getTodo());
         params.put("password", schedule.getPassword());
         params.put("created_at", now);
@@ -175,10 +176,10 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
     @Override
     public ScheduleDto updateSchedule(Schedule schedule) {
         String sql = """
-            UPDATE schedule
-            SET user_id = ?, todo = ?, updated_at = ?
-            WHERE id = ?
-        """;
+                UPDATE schedule
+                SET user_id = ?, todo = ?, updated_at = ?
+                WHERE id = ?
+               """;
 
         int updated = jdbcTemplate.update(
                 sql,
