@@ -14,7 +14,7 @@ public interface ScheduleService {
 
     ScheduleDto createSchedule(ScheduleCreateDto scheduleCreateDto); // 메모 생성
 
-    List<ScheduleListDto> getAllSchedules(String userName, LocalDateTime updatedAt); // 메모 전체 조회
+    List<ScheduleListDto> getAllSchedules(Long userId, LocalDateTime updatedAt); // 메모 전체 조회 (userId로 조회)
 
     ScheduleDetailDto getDetailSchedule(long scheduleId); // 메모 상세 조회
 

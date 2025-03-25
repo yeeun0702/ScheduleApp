@@ -30,12 +30,13 @@ public class ScheduleController {
         return ApiResponseDto.success(SuccessCode.SCHEDULE_POST_SUCCESS, scheduleService.createSchedule(scheduleCreateDto));
     }
 
+    // 전체 일정 조회 - (작성자의 고유 식별자를 통해 일정이 검색이 될 수 있도록 전체 일정 조회 코드 수정.)
     @GetMapping
     public ResponseEntity<ApiResponseDto<List<ScheduleListDto>>> getAllSchedules(
-            @RequestParam(required = false) String userName,
+            @RequestParam(required = false) Long userId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime updatedAt
     ) {
-        return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SCHEDULE_LIST_FOUND, scheduleService.getAllSchedules(userName, updatedAt)));
+        return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SCHEDULE_LIST_FOUND, scheduleService.getAllSchedules(userId, updatedAt)));
     }
 
     @GetMapping("/{scheduleId}")
