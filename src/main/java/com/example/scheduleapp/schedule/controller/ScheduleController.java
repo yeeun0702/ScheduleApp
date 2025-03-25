@@ -3,6 +3,7 @@ package com.example.scheduleapp.schedule.controller;
 import com.example.scheduleapp.common.response.ApiResponseDto;
 import com.example.scheduleapp.common.response.enums.SuccessCode;
 import com.example.scheduleapp.schedule.dto.request.ScheduleCreateDto;
+import com.example.scheduleapp.schedule.dto.request.ScheduleDeleteDto;
 import com.example.scheduleapp.schedule.dto.request.ScheduleUpdateDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleDetailDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleListDto;
@@ -43,10 +44,18 @@ public class ScheduleController {
     }
 
     @PutMapping("/{scheduleId}")
-    public  ResponseEntity<ApiResponseDto<ScheduleDetailDto>> getEditSchedule(
+    public ResponseEntity<ApiResponseDto<ScheduleDetailDto>> editSchedule(
             @PathVariable long scheduleId,
             @RequestBody ScheduleUpdateDto scheduleUpdateDto
             ) {
         return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SCHEDULE_PUT_SUCCESS, scheduleService.updateSchedule(scheduleId, scheduleUpdateDto)));
+    }
+
+    @DeleteMapping("/{scheduleId}")
+    public ResponseEntity<Void> deleteSchedule(
+            @PathVariable long scheduleId,
+            @RequestBody ScheduleDeleteDto scheduleDeleteDto) {
+        scheduleService.deleteSchedule(scheduleId, scheduleDeleteDto.password());
+        return ResponseEntity.noContent().build();
     }
 }
