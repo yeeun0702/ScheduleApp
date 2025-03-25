@@ -3,6 +3,7 @@ package com.example.scheduleapp.schedule.controller;
 import com.example.scheduleapp.common.response.ApiResponseDto;
 import com.example.scheduleapp.common.response.enums.SuccessCode;
 import com.example.scheduleapp.schedule.dto.request.ScheduleCreateDto;
+import com.example.scheduleapp.schedule.dto.request.ScheduleUpdateDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleDetailDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleListDto;
 import com.example.scheduleapp.schedule.service.ScheduleService;
@@ -37,7 +38,15 @@ public class ScheduleController {
     }
 
     @GetMapping("/{scheduleId}")
-    public ResponseEntity<ApiResponseDto<ScheduleDetailDto>> getDetailSchedules(@PathVariable long scheduleId) {
+    public ResponseEntity<ApiResponseDto<ScheduleDetailDto>> getDetailSchedule(@PathVariable long scheduleId) {
         return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SCHEDULE_GET_SUCCESS, scheduleService.getDetailSchedule(scheduleId)));
+    }
+
+    @PutMapping("/{scheduleId}")
+    public  ResponseEntity<ApiResponseDto<ScheduleDetailDto>> getEditSchedule(
+            @PathVariable long scheduleId,
+            @RequestBody ScheduleUpdateDto scheduleUpdateDto
+            ) {
+        return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SCHEDULE_PUT_SUCCESS, scheduleService.updateSchedule(scheduleId, scheduleUpdateDto)));
     }
 }
