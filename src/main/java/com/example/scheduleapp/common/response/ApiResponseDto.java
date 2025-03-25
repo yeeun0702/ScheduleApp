@@ -44,4 +44,15 @@ public record ApiResponseDto<T>(
                 .data(null)
                 .build();
     }
+
+    public static <T> ApiResponseDto<T> fail(final int code, final String message) {
+        return ApiResponseDto.<T>builder()
+                .httpStatus(HttpStatus.BAD_REQUEST)
+                .code(code)
+                .message(message)
+                .data(null)
+                .build();
+    }
+
+
 }
