@@ -5,6 +5,7 @@ public record ScheduleDto(
         Long id,
         Long userId,
         String userName,
+        String email,
         String todo,
         String password,
         LocalDateTime createdAt,
