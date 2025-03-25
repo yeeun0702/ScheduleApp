@@ -15,4 +15,10 @@ public interface ScheduleRepository {
     List<ScheduleListDto> getAllSchedules(String userName, LocalDateTime updatedAt);
 
     ScheduleDetailDto getDetailSchedule(long scheduleId);
+
+    ScheduleDto updateSchedule(Schedule schedule);
+
+    Schedule findById(Long scheduleId); // 일정 ID로 조회
+
+    Long findUserIdByName(String userName); // 작성자 이름으로 사용자 ID 조회
 }
