@@ -33,29 +33,29 @@ public class ScheduleController {
     // 전체 일정 조회 - (작성자의 고유 식별자를 통해 일정이 검색이 될 수 있도록 전체 일정 조회 코드 수정.)
     @GetMapping
     public ResponseEntity<ApiResponseDto<List<ScheduleListDto>>> getAllSchedules(
-            @RequestParam(required = false) Long userId,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime updatedAt
+            @RequestParam(required = false) final Long userId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) final LocalDateTime updatedAt
     ) {
         return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SCHEDULE_LIST_FOUND, scheduleService.getAllSchedules(userId, updatedAt)));
     }
 
     @GetMapping("/{scheduleId}")
-    public ResponseEntity<ApiResponseDto<ScheduleDetailDto>> getDetailSchedule(@PathVariable long scheduleId) {
+    public ResponseEntity<ApiResponseDto<ScheduleDetailDto>> getDetailSchedule(@PathVariable final long scheduleId) {
         return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SCHEDULE_GET_SUCCESS, scheduleService.getDetailSchedule(scheduleId)));
     }
 
     @PutMapping("/{scheduleId}")
     public ResponseEntity<ApiResponseDto<ScheduleDetailDto>> editSchedule(
-            @PathVariable long scheduleId,
-            @RequestBody ScheduleUpdateDto scheduleUpdateDto
+            @PathVariable final long scheduleId,
+            @RequestBody @Valid final ScheduleUpdateDto scheduleUpdateDto
             ) {
         return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SCHEDULE_PUT_SUCCESS, scheduleService.updateSchedule(scheduleId, scheduleUpdateDto)));
     }
 
     @DeleteMapping("/{scheduleId}")
     public ResponseEntity<Void> deleteSchedule(
-            @PathVariable long scheduleId,
-            @RequestBody ScheduleDeleteDto scheduleDeleteDto) {
+            @PathVariable final long scheduleId,
+            @RequestBody @Valid final ScheduleDeleteDto scheduleDeleteDto) {
         scheduleService.deleteSchedule(scheduleId, scheduleDeleteDto.password());
         return ResponseEntity.noContent().build();
     }

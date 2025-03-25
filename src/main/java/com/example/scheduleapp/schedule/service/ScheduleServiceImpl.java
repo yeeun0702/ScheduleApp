@@ -54,7 +54,7 @@ public class ScheduleServiceImpl implements ScheduleService {
      * - 사용자 이름과 수정일을 기준으로 일정 목록을 조회
      * - 조건이 없다면 전체 일정 반환
      *
-     * @param userName 작성자명 (Optional)
+     * @param userId 작성자명 (Optional)
      * @param updatedAt 수정일 기준 (Optional)
      * @return 일정 리스트
      */

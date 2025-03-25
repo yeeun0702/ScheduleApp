@@ -95,7 +95,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
     @Override
     public List<ScheduleListDto> getAllSchedules(Long userId, LocalDateTime updatedAt) {
         StringBuilder sql = new StringBuilder("""
-                    SELECT s.id, u.name, s.todo, s.updated_at
+                    SELECT s.id, u.name, u.email, s.todo, s.updated_at
                     FROM schedule s
                     JOIN users u ON s.user_id = u.id
                     WHERE 1=1
@@ -121,6 +121,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
                 new ScheduleListDto(
                         rs.getLong("id"),
                         rs.getString("name"),
+                        rs.getString("email"),
                         rs.getString("todo"),
                         rs.getTimestamp("updated_at").toLocalDateTime()
                 ), params.toArray()
@@ -131,16 +132,16 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
     /**
      * 일정 상세 조회
      * - scheduleId를 기준으로 일정 1건의 상세 정보를 조회
-     * - 작성자 이름, 할일, 비밀번호, 생성일, 수정일을 포함
+     * - 작성자 이름, 이메일, 할일, 비밀번호, 생성일, 수정일을 포함
      * - 존재하지 않는 ID일 경우 예외를 발생
      */
     @Override
     public ScheduleDetailDto getDetailSchedule(long scheduleId) {
         StringBuilder sql = new StringBuilder("""
-                    SELECT s.id, u.name, s.todo, s.password, s.created_at, s.updated_at
+                    SELECT u.name, u.email, s.todo, s.password, s.created_at, s.updated_at
                     FROM schedule s
                     JOIN users u ON s.user_id = u.id
-                    WHERE s.id = ?          
+                    WHERE s.id = ?
                 """);
 
         List<Object> params = new ArrayList<>(); // 리스트에 파라미터들 담기
@@ -151,6 +152,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
             return jdbcTemplate.queryForObject(sql.toString(), (rs, rowNum) ->
                     new ScheduleDetailDto(
                             rs.getString("name"),
+                            rs.getString("email"),
                             rs.getString("todo"),
                             rs.getString("password"),
                             rs.getTimestamp("created_at").toLocalDateTime(),
@@ -215,7 +217,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
     @Override
     public Schedule findById(Long scheduleId) {
         String sql = """
-                    SELECT s.id, s.todo, s.password, s.created_at, s.updated_at, s.user_id, u.name
+                    SELECT s.id, s.todo, s.password, s.created_at, s.updated_at, s.user_id, u.name, u.email
                     FROM schedule s
                     JOIN users u ON s.user_id = u.id
                     WHERE s.id = ?
