@@ -2,8 +2,10 @@ package com.example.scheduleapp.schedule.service;
 
 import com.example.scheduleapp.common.exception.BadRequestException;
 import com.example.scheduleapp.common.response.enums.ErrorCode;
+import com.example.scheduleapp.schedule.dto.request.PageRequestDto;
 import com.example.scheduleapp.schedule.dto.request.ScheduleCreateDto;
 import com.example.scheduleapp.schedule.dto.request.ScheduleUpdateDto;
+import com.example.scheduleapp.schedule.dto.response.PageResponseDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleDetailDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleListDto;
@@ -45,24 +47,33 @@ public class ScheduleServiceImpl implements ScheduleService {
      * - 사용자 이름과 수정일을 기준으로 일정 목록을 조회
      * - 조건이 없다면 전체 일정 반환
      *
-     * @param userName 작성자명 (Optional)
-     * @param updatedAt 수정일 기준 (Optional)
-     * @return 일정 리스트
-     */
-    /**
-     * 일정 목록 조회 메서드
-     * - 사용자 이름과 수정일을 기준으로 일정 목록을 조회
-     * - 조건이 없다면 전체 일정 반환
-     *
      * @param userId 작성자명 (Optional)
      * @param updatedAt 수정일 기준 (Optional)
      * @return 일정 리스트
      */
+    // 일정 목록을 페이지네이션하여 조회하는 메서드
     @Override
-    public List<ScheduleListDto> getAllSchedules(Long userId, LocalDateTime updatedAt) {
-        return scheduleRepository.getAllSchedules(userId, updatedAt); // userId 기반 조회
-    }
+    public PageResponseDto<ScheduleListDto> getAllSchedules(Long userId, LocalDateTime updatedAt, PageRequestDto pageRequestDto) {
 
+        // 일정 목록 조회 (페이지네이션 적용)
+        List<ScheduleListDto> schedules = scheduleRepository.getAllSchedules(userId, updatedAt, pageRequestDto);
+
+        // 전체 일정 개수 조회
+        long totalCount = scheduleRepository.countSchedules(userId, updatedAt);
+
+        // 전체 페이지 개수 계산 (총 개수 / 한 페이지당 개수) → 올림 처리
+        int totalPages = (int) Math.ceil((double) totalCount / pageRequestDto.size());
+
+        // 페이지네이션 정보를 포함한 응답 DTO 반환
+        return new PageResponseDto<>(
+                schedules,               // 조회된 일정 목록
+                pageRequestDto.page(),   // 현재 페이지 번호
+                pageRequestDto.size(),   // 한 페이지당 데이터 개수
+                totalPages,             // 전체 페이지 개수
+                totalCount            // 전체 일정 개수
+
+        );
+    }
 
     /**
      * 특정 일정 상세 조회
