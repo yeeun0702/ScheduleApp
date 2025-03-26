@@ -10,7 +10,7 @@
 - 사용자가 할 일을 관리할 수 있도록 합니다.
 - Spring Boot, JDBC 기반 구현
 - 예상지 못한 입력이나 패턴을 방지하기 위해 유효성 검증 기능(@Valid) 적용
-
+- 페이지네이션 적용
 
 
 ## ⚙️ Tech Stack
@@ -24,7 +24,7 @@
 | Validation | Jakarta Validation API |
 
 
-## 📂 프로젝트 구조
+## 📂 Project Structure
 ```java
 C:.
 └─scheduleapp
