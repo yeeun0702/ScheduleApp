@@ -1,5 +1,6 @@
 package com.example.scheduleapp.schedule.repository;
 
+import com.example.scheduleapp.schedule.dto.request.PageRequestDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleDetailDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleListDto;
@@ -12,7 +13,9 @@ public interface ScheduleRepository {
 
     ScheduleDto createSchedule(Schedule schedule); // 일정 생성
 
-    List<ScheduleListDto> getAllSchedules(Long userId, LocalDateTime updatedAt); // 일정 전체 조회 (userId)
+    List<ScheduleListDto> getAllSchedules(Long userId, LocalDateTime updatedAt, PageRequestDto pageRequestDto); // 일정 전체 조회 (userId)
+
+    long countSchedules(Long userId, LocalDateTime updatedAt); // 일정 수 조회
 
     ScheduleDetailDto getDetailSchedule(long scheduleId); // 일정 상세 조회
 
