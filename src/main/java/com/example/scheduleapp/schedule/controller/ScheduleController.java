@@ -2,9 +2,11 @@ package com.example.scheduleapp.schedule.controller;
 
 import com.example.scheduleapp.common.response.ApiResponseDto;
 import com.example.scheduleapp.common.response.enums.SuccessCode;
+import com.example.scheduleapp.schedule.dto.request.PageRequestDto;
 import com.example.scheduleapp.schedule.dto.request.ScheduleCreateDto;
 import com.example.scheduleapp.schedule.dto.request.ScheduleDeleteDto;
 import com.example.scheduleapp.schedule.dto.request.ScheduleUpdateDto;
+import com.example.scheduleapp.schedule.dto.response.PageResponseDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleDetailDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleListDto;
 import com.example.scheduleapp.schedule.service.ScheduleService;
@@ -33,12 +35,19 @@ public class ScheduleController {
 
     // 전체 일정 조회 - (작성자의 고유 식별자를 통해 일정이 검색이 될 수 있도록 전체 일정 조회 코드 수정.)
     @GetMapping
-    public ResponseEntity<ApiResponseDto<List<ScheduleListDto>>> getAllSchedules(
+    public ResponseEntity<ApiResponseDto<PageResponseDto<ScheduleListDto>>> getAllSchedules(
             @RequestParam(required = false) final Long userId,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) final LocalDateTime updatedAt
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) final LocalDateTime updatedAt,
+            @RequestParam(defaultValue = "0") int page, // 페이지 번호 (기본값: 0)
+            @RequestParam(defaultValue = "10") int size // 페이지당 일정 개수 (기본값: 10)
     ) {
-        return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SCHEDULE_LIST_FOUND, scheduleService.getAllSchedules(userId, updatedAt)));
+        PageRequestDto pageRequestDto = new PageRequestDto(page, size);
+        return ResponseEntity.ok(ApiResponseDto.success(
+                SuccessCode.SCHEDULE_LIST_FOUND,
+                scheduleService.getAllSchedules(userId, updatedAt, pageRequestDto)
+        ));
     }
+
 
     @GetMapping("/{scheduleId}")
     public ResponseEntity<ApiResponseDto<ScheduleDetailDto>> getDetailSchedule(@PathVariable final long scheduleId) {
