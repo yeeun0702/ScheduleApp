@@ -8,5 +8,4 @@ public record PageResponseDto<T>(
         int size,          // 페이지 크기
         int totalPages,    // 전체 페이지 수
         long totalElements // 전체 데이터 개수
-) {
-}
+) {}

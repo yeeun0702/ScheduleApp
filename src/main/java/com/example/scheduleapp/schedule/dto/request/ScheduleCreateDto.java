@@ -1,8 +1,6 @@
 package com.example.scheduleapp.schedule.dto.request;
 
-
 import jakarta.validation.constraints.*;
-
 
 public record ScheduleCreateDto(
         @NotBlank(message = "작성자의 이름을 추가해주세요.")
