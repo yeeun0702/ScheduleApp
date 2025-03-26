@@ -2,6 +2,7 @@ package com.example.scheduleapp.schedule.repository;
 
 import com.example.scheduleapp.common.exception.BadRequestException;
 import com.example.scheduleapp.common.response.enums.ErrorCode;
+import com.example.scheduleapp.schedule.dto.request.PageRequestDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleDetailDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleDto;
 import com.example.scheduleapp.schedule.dto.response.ScheduleListDto;
@@ -86,48 +87,79 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
         }
     }
 
-
     /**
-     * 일정 목록 조회
-     * - userId, updatedAt 두 조건 모두 선택적
-     * - 조건이 존재할 경우 WHERE 절에 추가
-     * - updated_at 기준 내림차순 정렬
+     * 일정 목록 조회 (페이지네이션 포함)
+     * - 작성자 ID(userId)와 수정일(updatedAt)을 조건으로 일정 목록을 조회
+     * - 조건이 존재할 경우 WHERE 절에 동적으로 추가됨
+     * - 최신 수정일 기준 내림차순 정렬
+     * - LIMIT와 OFFSET을 활용해 페이지네이션 처리
+     *
+     * @param userId 작성자 ID (Optional)
+     * @param updatedAt 수정일 기준 (Optional)
+     * @param pageRequestDto 페이지 번호 및 크기를 담은 객체
+     * @return 조회된 일정 리스트 (ScheduleListDto 목록)
      */
     @Override
-    public List<ScheduleListDto> getAllSchedules(Long userId, LocalDateTime updatedAt) {
+    public List<ScheduleListDto> getAllSchedules(Long userId, LocalDateTime updatedAt, PageRequestDto pageRequestDto) {
         StringBuilder sql = new StringBuilder("""
-                    SELECT s.id, u.name, u.email, s.todo, s.updated_at
-                    FROM schedule s
-                    JOIN users u ON s.user_id = u.id
-                    WHERE 1=1
-                """);
+        SELECT s.id, u.name, u.email, s.todo, s.updated_at
+        FROM schedule s
+        JOIN users u ON s.user_id = u.id
+        WHERE 1=1
+    """);
 
         List<Object> params = new ArrayList<>();
 
-        // userId 조건 추가
+        // 작성자 ID 필터링 조건
         if (userId != null) {
             sql.append(" AND s.user_id = ?");
             params.add(userId);
         }
 
-        // 수정일 조건 추가 (날짜만 비교)
+        // 수정일 필터링 조건 (날짜만 비교)
         if (updatedAt != null) {
             sql.append(" AND DATE(s.updated_at) = DATE(?)");
             params.add(updatedAt);
         }
 
-        sql.append(" ORDER BY s.updated_at DESC"); // 수정일 내림차순 정렬
+        // 정렬 및 페이징 처리
+        sql.append(" ORDER BY s.updated_at DESC LIMIT ? OFFSET ?");
+        params.add(pageRequestDto.size());         // LIMIT
+        params.add(pageRequestDto.offset());       // OFFSET = page * size
 
-        return jdbcTemplate.query(sql.toString(), (rs, rowNum) ->
-                new ScheduleListDto(
-                        rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getString("email"),
-                        rs.getString("todo"),
-                        rs.getTimestamp("updated_at").toLocalDateTime()
-                ), params.toArray()
-        );
+        // 결과 매핑하여 반환
+        return jdbcTemplate.query(sql.toString(), (rs, rowNum) -> new ScheduleListDto(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getString("email"),
+                rs.getString("todo"),
+                rs.getTimestamp("updated_at").toLocalDateTime()
+        ), params.toArray());
     }
+
+    /**
+     * 일정 수 조회
+     * - 페이지네이션을 위한 전체 일정 수 계산
+     * - userId와 updatedAt 조건을 기준으로 COUNT(*) 실행
+     *
+     * @param userId 작성자 ID (Optional)
+     * @param updatedAt 수정일 기준 (Optional)
+     * @return 일정 총 개수
+     */
+    public long countSchedules(Long userId, LocalDateTime updatedAt) {
+        StringBuilder sql = new StringBuilder("""
+        SELECT COUNT(*)
+        FROM schedule s
+        JOIN users u ON s.user_id = u.id
+        WHERE 1=1
+    """);
+
+        List<Object> params = new ArrayList<>();
+
+        if (userId != null) {
+            sql.append(" AND s.user_id = ?");
+            params.add(userId);
+        }
 
 
     /**
