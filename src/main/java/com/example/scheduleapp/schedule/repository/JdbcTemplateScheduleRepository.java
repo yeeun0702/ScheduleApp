@@ -74,6 +74,14 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
         );
     }
 
+    /**
+     * 사용자의 이름(userName)과 이메일(email)을 이용하여 해당 사용자의 ID를 조회하는 메서드.
+     *
+     * @param userName 조회할 사용자의 이름
+     * @param email    조회할 사용자의 이메일
+     * @return         해당 사용자의 ID (Long 타입)
+     * @throws BadRequestException 사용자가 존재하지 않을 경우 예외 발생
+     */
     public Long findUserIdByNameAndEmail(String userName, String email) {
         try {
             return jdbcTemplate.queryForObject(
@@ -161,6 +169,13 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
             params.add(userId);
         }
 
+        if (updatedAt != null) {
+            sql.append(" AND DATE(s.updated_at) = DATE(?)");
+            params.add(updatedAt);
+        }
+
+        return jdbcTemplate.queryForObject(sql.toString(), Long.class, params.toArray());
+    }
 
     /**
      * 일정 상세 조회
