@@ -24,8 +24,73 @@
 | Validation | Jakarta Validation API |
 
 
-## 프로젝트 구조
-
+## 📂 프로젝트 구조
+```java
+C:.
+└─scheduleapp
+    │  ScheduleAppApplication.java
+    │  structure.txt
+    │
+    ├─common
+    │  ├─exception
+    │  │      BadRequestException.java
+    │  │      CustomException.java
+    │  │      GlobalExceptionHandler.java
+    │  │      ResponseStatusSetterAdvice.java
+    │  │
+    │  └─response
+    │      │  ApiResponseDto.java
+    │      │
+    │      └─enums
+    │              ErrorCode.java
+    │              SuccessCode.java
+    │
+    ├─schedule
+    │  ├─controller
+    │  │      ScheduleController.java
+    │  │
+    │  ├─dto
+    │  │  ├─request
+    │  │  │      PageRequestDto.java
+    │  │  │      ScheduleCreateDto.java
+    │  │  │      ScheduleDeleteDto.java
+    │  │  │      ScheduleUpdateDto.java
+    │  │  │
+    │  │  └─response
+    │  │          PageResponseDto.java
+    │  │          ScheduleDetailDto.java
+    │  │          ScheduleDto.java
+    │  │          ScheduleListDto.java
+    │  │
+    │  ├─entity
+    │  │      Schedule.java
+    │  │
+    │  ├─repository
+    │  │      JdbcTemplateScheduleRepository.java
+    │  │      ScheduleRepository.java
+    │  │
+    │  └─service
+    │          ScheduleService.java
+    │          ScheduleServiceImpl.java
+    │
+    └─users
+        ├─controller
+        │      UsersController.java
+        │
+        ├─dto
+        │  ├─request
+        │  └─response
+        ├─entity
+        │      Users.java
+        │
+        ├─repository
+        │      JdbcTemplateUserRepository.java
+        │      UsersRepository.java
+        │
+        └─service
+                UserServiceImpl.java
+                UsersService.java
+```
 
 ## 🌐 API Endpoints
 
