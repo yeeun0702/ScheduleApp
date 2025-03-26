@@ -8,5 +8,4 @@ public record ScheduleListDto(
         String email,
         String todo,
         LocalDateTime updatedAt
-) {
-}
+) {}

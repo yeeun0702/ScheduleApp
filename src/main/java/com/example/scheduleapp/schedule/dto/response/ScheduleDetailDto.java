@@ -9,6 +9,4 @@ public record ScheduleDetailDto(
         String password,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
-
-) {
-}
+) {}

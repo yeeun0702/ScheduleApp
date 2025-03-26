@@ -29,6 +29,7 @@ public class Schedule {
         this.password = password;
     }
 
+    // update 메서드
     public void update(String todo, String userName, String email, Long userId, LocalDateTime updatedAt) {
         this.todo = todo;
         this.userName = userName;

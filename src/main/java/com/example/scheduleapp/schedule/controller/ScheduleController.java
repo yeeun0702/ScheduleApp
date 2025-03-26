@@ -48,7 +48,6 @@ public class ScheduleController {
         ));
     }
 
-
     @GetMapping("/{scheduleId}")
     public ResponseEntity<ApiResponseDto<ScheduleDetailDto>> getDetailSchedule(@PathVariable final long scheduleId) {
         return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SCHEDULE_GET_SUCCESS, scheduleService.getDetailSchedule(scheduleId)));
@@ -58,7 +57,7 @@ public class ScheduleController {
     public ResponseEntity<ApiResponseDto<ScheduleDetailDto>> editSchedule(
             @PathVariable final long scheduleId,
             @RequestBody @Valid final ScheduleUpdateDto scheduleUpdateDto
-            ) {
+    ) {
         return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SCHEDULE_PUT_SUCCESS, scheduleService.updateSchedule(scheduleId, scheduleUpdateDto)));
     }
 
