@@ -29,7 +29,7 @@ public class ScheduleController {
 
     @PostMapping
     private ApiResponseDto<?> createSchedule(@RequestBody @Valid final ScheduleCreateDto scheduleCreateDto) {
-        return ApiResponseDto.success(SuccessCode.SCHEDULE_POST_SUCCESS, scheduleService.createSchedule(scheduleCreateDto));
+        return ApiResponseDto.success(SuccessCode.SCHEDULE_CREATE_SUCCESS, scheduleService.createSchedule(scheduleCreateDto));
     }
 
     // 전체 일정 조회 - (작성자의 고유 식별자를 통해 일정이 검색이 될 수 있도록 전체 일정 조회 코드 수정.)
@@ -42,14 +42,14 @@ public class ScheduleController {
     ) {
         PageRequestDto pageRequestDto = new PageRequestDto(page, size);
         return ResponseEntity.ok(ApiResponseDto.success(
-                SuccessCode.SCHEDULE_LIST_FOUND,
+                SuccessCode.SCHEDULE_LIST_SUCCESS,
                 scheduleService.getAllSchedules(userId, updatedAt, pageRequestDto)
         ));
     }
 
     @GetMapping("/{scheduleId}")
     public ResponseEntity<ApiResponseDto<ScheduleDetailDto>> getDetailSchedule(@PathVariable final long scheduleId) {
-        return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SCHEDULE_GET_SUCCESS, scheduleService.getDetailSchedule(scheduleId)));
+        return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SCHEDULE_READ_SUCCESS, scheduleService.getDetailSchedule(scheduleId)));
     }
 
     @PutMapping("/{scheduleId}")
@@ -57,7 +57,7 @@ public class ScheduleController {
             @PathVariable final long scheduleId,
             @RequestBody @Valid final ScheduleUpdateDto scheduleUpdateDto
     ) {
-        return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SCHEDULE_PUT_SUCCESS, scheduleService.updateSchedule(scheduleId, scheduleUpdateDto)));
+        return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SCHEDULE_UPDATE_SUCCESS, scheduleService.updateSchedule(scheduleId, scheduleUpdateDto)));
     }
 
     @DeleteMapping("/{scheduleId}")
