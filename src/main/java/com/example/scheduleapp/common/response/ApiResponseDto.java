@@ -2,7 +2,6 @@ package com.example.scheduleapp.common.response;
 
 import com.example.scheduleapp.common.response.enums.ErrorCode;
 import com.example.scheduleapp.common.response.enums.SuccessCode;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.annotation.Nullable;
 import lombok.Builder;
@@ -13,8 +12,8 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @Builder
 public record ApiResponseDto<T>(
-        @JsonIgnore HttpStatus httpStatus,
-        int code,
+        HttpStatus httpStatus,
+        String code,
         @NonNull String message,
         @JsonInclude(value = NON_NULL) T data
 ) {
@@ -45,7 +44,7 @@ public record ApiResponseDto<T>(
                 .build();
     }
 
-    public static <T> ApiResponseDto<T> fail(final int code, final String message) {
+    public static <T> ApiResponseDto<T> fail(final String code, final String message) {
         return ApiResponseDto.<T>builder()
                 .httpStatus(HttpStatus.BAD_REQUEST)
                 .code(code)
@@ -53,6 +52,5 @@ public record ApiResponseDto<T>(
                 .data(null)
                 .build();
     }
-
 
 }
