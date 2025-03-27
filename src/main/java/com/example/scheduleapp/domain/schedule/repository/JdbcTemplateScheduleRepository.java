@@ -1,6 +1,6 @@
 package com.example.scheduleapp.domain.schedule.repository;
 
-import com.example.scheduleapp.common.exception.BadRequestException;
+import com.example.scheduleapp.common.exception.NotFoundException;
 import com.example.scheduleapp.common.response.enums.ErrorCode;
 import com.example.scheduleapp.domain.schedule.dto.request.PageRequestDto;
 import com.example.scheduleapp.domain.schedule.dto.response.ScheduleDetailDto;
@@ -40,7 +40,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
 
         Long userId = findUserIdByNameAndEmail(schedule.getUserName(), schedule.getEmail());
         if (userId == null) {
-            throw new BadRequestException(ErrorCode.USER_NOT_FOUND);
+            throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
         }
 
         // INSERT Query를 직접 작성하지 않아도 되게 구현
@@ -80,7 +80,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
      * @param userName 조회할 사용자의 이름
      * @param email    조회할 사용자의 이메일
      * @return 해당 사용자의 ID (Long 타입)
-     * @throws BadRequestException 사용자가 존재하지 않을 경우 예외 발생
+     * @throws NotFoundException 사용자가 존재하지 않을 경우 예외 발생
      */
     public Long findUserIdByNameAndEmail(String userName, String email) {
         try {
@@ -91,7 +91,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
                     email
             );
         } catch (EmptyResultDataAccessException e) {
-            throw new BadRequestException(ErrorCode.USER_NOT_FOUND);
+            throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
         }
     }
 
@@ -208,7 +208,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
                     ), params.toArray()
             );
         } catch (EmptyResultDataAccessException e) {
-            throw new BadRequestException(ErrorCode.SCHEDULE_NOT_FOUND);
+            throw new NotFoundException(ErrorCode.SCHEDULE_NOT_FOUND);
         }
     }
 
@@ -238,7 +238,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
 
         // update 쿼리 실행 결과가 0이면 존재하지 않는 ID로 간주하여 예외 처리
         if (updated == 0) {
-            throw new BadRequestException(ErrorCode.SCHEDULE_NOT_FOUND);
+            throw new NotFoundException(ErrorCode.SCHEDULE_NOT_FOUND);
         }
 
         // 수정 후 정보 반환
@@ -283,7 +283,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
                     rs.getTimestamp("updated_at").toLocalDateTime()
             ), scheduleId);
         } catch (EmptyResultDataAccessException e) {
-            throw new BadRequestException(ErrorCode.SCHEDULE_NOT_FOUND);
+            throw new NotFoundException(ErrorCode.SCHEDULE_NOT_FOUND);
         }
     }
 
@@ -304,7 +304,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
                     userName
             );
         } catch (EmptyResultDataAccessException e) {
-            throw new BadRequestException(ErrorCode.USER_NOT_FOUND);
+            throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
         }
     }
 
@@ -322,7 +322,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
 
         // 삭제된 행이 없으면 예외 발생 (잘못된 ID 요청)
         if (result == 0) {
-            throw new BadRequestException(ErrorCode.SCHEDULE_NOT_FOUND);
+            throw new NotFoundException(ErrorCode.SCHEDULE_NOT_FOUND);
         }
     }
 }
