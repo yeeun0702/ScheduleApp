@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
                 .orElse("잘못된 요청입니다.");
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponseDto.fail(400, errorMessage)); // 커스텀 메시지 적용
+                .body(ApiResponseDto.fail("C101", errorMessage)); // 커스텀 메시지 적용
     }
 
     /**
@@ -81,7 +81,7 @@ public class GlobalExceptionHandler {
                 "handlerMissingRequestHeaderException() in GlobalExceptionHandler throw MissingRequestHeaderException : {}",
                 e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponseDto.fail(ErrorCode.MISSING_REQUIRED_HEADER));
+                .body(ApiResponseDto.fail(ErrorCode.MISSING_PARAMETER));
     }
 
     /**
@@ -94,7 +94,7 @@ public class GlobalExceptionHandler {
                 "handlerMissingServletRequestParameterException() in GlobalExceptionHandler throw MissingServletRequestParameterException : {}",
                 e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponseDto.fail(ErrorCode.MISSING_REQUIRED_PARAMETER));
+                .body(ApiResponseDto.fail(ErrorCode.INVALID_PARAMETER));
     }
 
     /**
@@ -146,7 +146,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(e.getHttpStatus())
                 .body(ApiResponseDto.fail(e.getErrorCode()));
     }
-
 
     /**
      * 그 외 모든 예외 처리
